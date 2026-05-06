@@ -1,92 +1,369 @@
-/* Keep it simple and clean */
+/* =========================================
+   Task Manager — Modern UI
+   Font: DM Sans + DM Mono (Google Fonts)
+   ========================================= */
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg:            #0d0f14;
+    --surface:       #13161e;
+    --surface-2:     #1c202c;
+    --border:        rgba(255, 255, 255, 0.07);
+    --border-hover:  rgba(255, 255, 255, 0.14);
+    --accent:        #6c8fff;
+    --accent-glow:   rgba(108, 143, 255, 0.25);
+    --accent-hover:  #5577ee;
+    --danger:        #ff5e6c;
+    --danger-hover:  #e04555;
+    --text-primary:  #eef0f6;
+    --text-secondary:#8891aa;
+    --text-muted:    #555c72;
+    --radius-sm:     8px;
+    --radius-md:     12px;
+    --radius-lg:     18px;
+    --shadow:        0 8px 32px rgba(0, 0, 0, 0.45);
+    --transition:    0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Base ─────────────────────────────── */
 
 body {
-    font-family: Arial, sans-serif;
-    background: #f5f6fa;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    padding: 24px 16px;
+    overflow-x: hidden;
+    position: relative;
 }
 
-/* Container */
-.container {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
+/* ── Ambient background orbs ──────────── */
+
+.bg-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+}
+
+.orb-1 {
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(circle, #3a5bd9 0%, transparent 70%);
+    top: -100px;
+    right: -80px;
+    animation: drift 14s ease-in-out infinite alternate;
+}
+
+.orb-2 {
     width: 300px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    text-align: center;
+    height: 300px;
+    background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
+    bottom: -80px;
+    left: -60px;
+    animation: drift 18s ease-in-out infinite alternate-reverse;
 }
 
-/* Title */
+@keyframes drift {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(20px, 20px) scale(1.05); }
+}
+
+/* ── Container ────────────────────────── */
+
+.container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 32px 28px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: var(--shadow);
+    position: relative;
+    z-index: 1;
+    animation: slideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header ───────────────────────────── */
+
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.header-icon {
+    width: 46px;
+    height: 46px;
+    background: linear-gradient(135deg, #3a5bd9, #6c8fff);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px var(--accent-glow);
+}
+
 h1 {
-    margin-bottom: 15px;
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+    line-height: 1.2;
 }
 
-/* Input + button */
-.input-box {
+.subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+    font-weight: 400;
+}
+
+/* ── Input Section ────────────────────── */
+
+.input-section {
     display: flex;
     gap: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
-input {
+.input-wrapper {
     flex: 1;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
-/* Add button */
-.input-box button {
-    background: #007bff;
-    color: white;
+.input-icon {
+    position: absolute;
+    left: 13px;
+    color: var(--text-muted);
+    pointer-events: none;
+    transition: color var(--transition);
 }
 
-.input-box button:hover {
-    background: #0056b3;
+#taskInput {
+    width: 100%;
+    padding: 12px 14px 12px 38px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
 }
 
-/* Task list */
-ul {
+#taskInput::placeholder {
+    color: var(--text-muted);
+}
+
+#taskInput:focus {
+    border-color: var(--accent);
+    background: #1a1e2a;
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+#taskInput:focus + .input-icon,
+.input-wrapper:focus-within .input-icon {
+    color: var(--accent);
+}
+
+#addBtn {
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #3a5bd9, var(--accent));
+    border: none;
+    border-radius: var(--radius-md);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+    box-shadow: 0 4px 14px var(--accent-glow);
+    letter-spacing: 0.2px;
+}
+
+#addBtn:hover {
+    filter: brightness(1.12);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px var(--accent-glow);
+}
+
+#addBtn:active {
+    transform: scale(0.96) translateY(0);
+    filter: brightness(0.95);
+}
+
+/* ── Task meta count ──────────────────── */
+
+.task-meta {
+    margin-bottom: 10px;
+    padding: 0 2px;
+}
+
+.task-count {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* ── Task List ────────────────────────── */
+
+#taskList {
     list-style: none;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-li {
+/* ── Task Item ────────────────────────── */
+
+#taskList li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #f1f3f5;
-    padding: 8px;
-    border-radius: 5px;
-    margin-bottom: 8px;
-    transition: 0.2s;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 13px 14px;
+    border-radius: var(--radius-md);
+    gap: 12px;
+    transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition), background var(--transition);
+    animation: taskIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Hover effect (clean) */
-li:hover {
+@keyframes taskIn {
+    from { opacity: 0; transform: translateY(10px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+#taskList li:hover {
+    border-color: var(--border-hover);
+    background: #1e2230;
     transform: translateY(-2px);
-    background: #e9ecef;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
 }
 
-/* Delete button (RED again) */
-li button {
-    background: #dc3545;
-    color: white;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 5px;
+#taskList li span {
+    flex: 1;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 400;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+/* ── Delete Button ────────────────────── */
+
+#taskList li button {
+    background: transparent;
+    border: 1px solid rgba(255, 94, 108, 0.25);
+    color: var(--danger);
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: 0.2s;
+    flex-shrink: 0;
+    transition: background var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+    letter-spacing: 0.2px;
 }
 
-li button:hover {
-    background: #b02a37;
+#taskList li button:hover {
+    background: rgba(255, 94, 108, 0.12);
+    border-color: rgba(255, 94, 108, 0.5);
+    transform: scale(1.04);
+    box-shadow: 0 2px 10px rgba(255, 94, 108, 0.15);
 }
 
-/* Click animation */
-button:active {
+#taskList li button:active {
     transform: scale(0.95);
+}
+
+/* ── Empty State ──────────────────────── */
+
+.empty-state {
+    text-align: center;
+    padding: 36px 0 12px;
+    animation: fadeIn 0.4s ease both;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.empty-icon {
+    width: 56px;
+    height: 56px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    color: var(--text-muted);
+}
+
+.empty-state p {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+}
+
+/* ── Scrollbar ────────────────────────── */
+
+#taskList::-webkit-scrollbar { width: 4px; }
+#taskList::-webkit-scrollbar-track { background: transparent; }
+#taskList::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* ── Responsive ───────────────────────── */
+
+@media (max-width: 480px) {
+    .container {
+        padding: 24px 18px;
+        border-radius: var(--radius-md);
+    }
+
+    h1 {
+        font-size: 1.15rem;
+    }
+
+    .input-section {
+        flex-direction: column;
+    }
+
+    #addBtn {
+        width: 100%;
+        padding: 13px;
+        font-size: 0.9rem;
+    }
+
+    #taskInput {
+        font-size: 1rem;
+    }
 }
