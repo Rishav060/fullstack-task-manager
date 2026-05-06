@@ -1,8 +1,25 @@
-let input = document.querySelector("input");
-let btn = document.querySelector("button");
-let ul = document.querySelector("ul");
+let input = document.querySelector("#taskInput");
+let btn = document.querySelector("#addBtn");
+let ul = document.querySelector("#taskList");
+
+// UI elements added in the new design
+const taskMeta = document.getElementById("taskMeta");
+const taskCount = document.getElementById("taskCount");
+const emptyState = document.getElementById("emptyState");
 
 const BASE_URL = "http://localhost:3000/tasks";
+
+// Update the task counter and empty state visibility
+function updateUI(count) {
+    if (count === 0) {
+        taskMeta.style.display = "none";
+        emptyState.style.display = "block";
+    } else {
+        taskMeta.style.display = "block";
+        emptyState.style.display = "none";
+        taskCount.textContent = count === 1 ? "1 task" : `${count} tasks`;
+    }
+}
 
 // LOAD TASKS
 async function loadTasks() {
@@ -30,15 +47,23 @@ async function loadTasks() {
             ul.appendChild(li);
         });
 
+        updateUI(data.length);
+
     } catch (err) {
         console.log("Load error:", err);
+        updateUI(0);
     }
 }
 
 // ADD TASK
 btn.addEventListener("click", async () => {
     let text = input.value.trim();
-    if (!text) return;
+    if (!text) {
+        // Shake the input if empty
+        input.classList.add("shake");
+        setTimeout(() => input.classList.remove("shake"), 400);
+        return;
+    }
 
     try {
         await fetch(BASE_URL, {
@@ -54,6 +79,13 @@ btn.addEventListener("click", async () => {
 
     } catch (err) {
         console.log("Add error:", err);
+    }
+});
+
+// Allow pressing Enter to add a task
+input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        btn.click();
     }
 });
 
